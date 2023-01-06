@@ -14,6 +14,7 @@ import {createProductsAsync} from '../../redux/products';
 export default function Register({navigation}) {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user.user);
+  const authResult = useSelector(state => state.user.authResult);
   const error = useSelector(state => state.user.error);
   const isLoading = useSelector(state => state.user.isLoading);
 
@@ -28,6 +29,19 @@ export default function Register({navigation}) {
       ]);
     }
   }, [error]);
+
+  useEffect(() => {
+    if (authResult) {
+      createProducts();
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [{name: 'MainNavigator'}],
+        }),
+      );
+    }
+    setButtonDisabled(false);
+  }, [authResult]);
 
   const [state, setState] = useState({
     username: null,
@@ -52,18 +66,15 @@ export default function Register({navigation}) {
 
   const register = async () => {
     dispatch(registerAsync(state));
-    // navigation.dispatch(
-    //   CommonActions.reset({
-    //     index: 1,
-    //     routes: [{name: 'MainNavigator'}],
-    //   }),
-    // );
   };
 
   const createProducts = () => {
     const payload = {
-      userRef: user._ref,
+      userRef: user.uid,
+      products: [],
     };
+    console.log('payload1', payload);
+    dispatch(createProductsAsync(payload));
   };
 
   return (
@@ -97,7 +108,7 @@ export default function Register({navigation}) {
         <View style={styles.button}>
           <Button
             onPress={() => register()}
-            text="Sign In"
+            text="Register"
             style={styles.registerButton}
             textStyle={styles.registerButtonText}
             disabled={buttonDisabled}

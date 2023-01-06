@@ -1,6 +1,6 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 
-import {fetchProducts} from '../../firebase';
+import {fetchProducts, createProducts} from '../../firebase';
 
 export const fetchProductsAsync = createAsyncThunk(
   'products/fetchProductsAsync',
@@ -12,9 +12,9 @@ export const fetchProductsAsync = createAsyncThunk(
 
 export const createProductsAsync = createAsyncThunk(
   'products/createProductsAsync',
-  async () => {
-    // const res = await createProduct()
-    // return res;
+  async payload => {
+    console.log('payload2', payload);
+    await createProducts(payload);
   },
 );
 

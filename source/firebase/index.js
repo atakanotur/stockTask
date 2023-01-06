@@ -2,10 +2,17 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
 export const createProducts = payload => {
+  console.log('payload3', payload);
   return new Promise((resolve, reject) => {
     try {
-      firestore().collection('products').add(payload);
+      console.log('x');
+      firestore()
+        .collection('products')
+        .add(payload)
+        .then(r => console.log('r', r))
+        .catch(e => console.log('e', e));
     } catch (error) {
+      console.log('error', error);
       reject(error);
     }
   });
@@ -67,8 +74,12 @@ export const createUser = payload => {
       auth()
         .createUserWithEmailAndPassword(payload.username, payload.password)
         .then(res => {
+          const result = {
+            ...res.user._user,
+            authResult: res.user._auth._authResult,
+          };
           console.log('User account created & signed in!', res);
-          resolve(res.user);
+          resolve(result);
         })
         .catch(error => {
           if (error.code === 'auth/email-already-in-use') {

@@ -34,6 +34,7 @@ const userSlice = createSlice({
     });
     builder.addCase(registerAsync.fulfilled, (state, action) => {
       state.user = action.payload;
+      state.authResult = action.payload.authResult;
       state.isLoading = false;
     });
     builder.addCase(registerAsync.rejected, (state, action) => {
