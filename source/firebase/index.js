@@ -1,51 +1,60 @@
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
+import {useSelector} from 'react-redux';
+
 export const createProducts = payload => {
   console.log('payload3', payload);
   return new Promise((resolve, reject) => {
     try {
-      console.log('x');
+      firestore().collection('products').add(payload);
+    } catch (error) {
+      console.log('error', error);
+      reject(error);
+    }
+  });
+};
+
+export const fetchProducts = payload => {
+  return new Promise((resolve, reject) => {
+    try {
       firestore()
         .collection('products')
-        .add(payload)
-        .then(r => console.log('r', r))
+        .where('userId', '==', payload)
+        .get()
+        .then(querySnapshot => {
+          let result = {};
+          querySnapshot.forEach(queryDocumentSnapshot => {
+            result = {
+              ref: queryDocumentSnapshot._ref._documentPath._parts[1],
+              ...queryDocumentSnapshot._data,
+            };
+          });
+          resolve(result);
+        });
+    } catch (error) {
+      console.log('error.fetchProducts', error);
+      reject(error);
+    }
+  });
+};
+
+export const addProduct = payload => {
+  console.log('payload', payload);
+  return new Promise((resolve, reject) => {
+    try {
+      firestore()
+        .collection('products')
+        .doc(payload.ref)
+        .update({
+          products: payload.products,
+        })
+        .then(res => {
+          resolve(res);
+        })
         .catch(e => console.log('e', e));
     } catch (error) {
       console.log('error', error);
-      reject(error);
-    }
-  });
-};
-
-export const fetchProducts = () => {
-  return new Promise((resolve, reject) => {
-    try {
-      firestore()
-        .collection('products')
-        .get()
-        .then(querySnapshot => {
-          const data = [];
-          querySnapshot.forEach(queryDocumentSnapshot => {
-            data.push({
-              ref: queryDocumentSnapshot._ref._documentPath._parts[1],
-              ...queryDocumentSnapshot._data,
-            });
-          });
-          resolve(data);
-        });
-    } catch (error) {
-      console.log('error', error);
-      reject(error);
-    }
-  });
-};
-
-export const fetchProduct = () => {
-  return new Promise((resolve, reject) => {
-    try {
-    } catch (error) {
-      reject(error);
     }
   });
 };

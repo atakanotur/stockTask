@@ -70,7 +70,7 @@ export default function Register({navigation}) {
 
   const createProducts = () => {
     const payload = {
-      userRef: user.uid,
+      userId: user.uid,
       products: [],
     };
     console.log('payload1', payload);
