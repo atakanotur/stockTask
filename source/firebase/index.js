@@ -1,8 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
-import {useSelector} from 'react-redux';
-
+//products
 export const createProducts = payload => {
   console.log('payload3', payload);
   return new Promise((resolve, reject) => {
@@ -40,7 +39,6 @@ export const fetchProducts = payload => {
 };
 
 export const addProduct = payload => {
-  console.log('payload', payload);
   return new Promise((resolve, reject) => {
     try {
       firestore()
@@ -55,28 +53,32 @@ export const addProduct = payload => {
         .catch(e => console.log('e', e));
     } catch (error) {
       console.log('error', error);
-    }
-  });
-};
-
-export const updateProduct = () => {
-  return new Promise((resolve, reject) => {
-    try {
-    } catch (error) {
       reject(error);
     }
   });
 };
 
-export const deleteProduct = () => {
+export const updateProduct = payload => {
   return new Promise((resolve, reject) => {
     try {
+      firestore()
+        .collection('products')
+        .doc(payload.ref)
+        .update({
+          products: payload.products,
+        })
+        .then(res => {
+          resolve(res);
+        })
+        .catch(e => console.log('e', e));
     } catch (error) {
+      console.log('error', error);
       reject(error);
     }
   });
 };
 
+//user
 export const createUser = payload => {
   return new Promise((resolve, reject) => {
     try {

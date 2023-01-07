@@ -1,6 +1,11 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 
-import {fetchProducts, createProducts, addProduct} from '../../firebase';
+import {
+  fetchProducts,
+  createProducts,
+  addProduct,
+  updateProduct,
+} from '../../firebase';
 
 export const fetchProductsAsync = createAsyncThunk(
   'products/fetchProductsAsync',
@@ -22,6 +27,14 @@ export const addProductAsync = createAsyncThunk(
   'products/addProductAsync',
   async payload => {
     const res = await addProduct(payload);
+    return res;
+  },
+);
+
+export const updateProductAsync = createAsyncThunk(
+  'products/updateProductAsync',
+  async payload => {
+    const res = await updateProduct(payload);
     return res;
   },
 );
@@ -67,16 +80,27 @@ const productsSlice = createSlice({
       state.error = action.error;
       state.isLoading = false;
     });
-    //addProducts
+    //addProduct
     builder.addCase(addProductAsync.pending, (state, action) => {
       state.isLoading = true;
     });
     builder.addCase(addProductAsync.fulfilled, (state, action) => {
       console.log('action.payload', action.payload);
-      // state.productList = action.payload;
       state.isLoading = false;
     });
     builder.addCase(addProductAsync.rejected, (state, action) => {
+      state.error = action.error;
+      state.isLoading = false;
+    });
+    //deleteProduct
+    builder.addCase(updateProductAsync.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(updateProductAsync.fulfilled, (state, action) => {
+      console.log('action.payload', action.payload);
+      state.isLoading = false;
+    });
+    builder.addCase(updateProductAsync.rejected, (state, action) => {
       state.error = action.error;
       state.isLoading = false;
     });
