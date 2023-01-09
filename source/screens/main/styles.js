@@ -73,6 +73,9 @@ export const styles = StyleSheet.create({
     padding: 15,
     justifyContent: 'space-between',
   },
+  productOptionsModalBannerText: {
+    fontSize: 20,
+  },
   productOptionsModalInputs: {
     justifyContent: 'center',
   },

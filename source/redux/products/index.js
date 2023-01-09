@@ -46,12 +46,14 @@ const productsSlice = createSlice({
     isLoading: false,
     products: {},
     productList: [],
+    selectedProduct: {},
   },
   reducers: {
-    updateProducts: (state, action) => {
-      console.log('action.payloadx', action.payload);
-      state.productList = action.payload;
-      console.log('state.productList', state.productList);
+    // updateProducts: (state, action) => {
+    //   state.productList = action.payload;
+    // },
+    setSelectedProduct: (state, action) => {
+      state.selectedProduct = action.payload;
     },
   },
   extraReducers: builder => {
@@ -85,7 +87,6 @@ const productsSlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(addProductAsync.fulfilled, (state, action) => {
-      console.log('action.payload', action.payload);
       state.isLoading = false;
     });
     builder.addCase(addProductAsync.rejected, (state, action) => {
@@ -97,7 +98,6 @@ const productsSlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(updateProductAsync.fulfilled, (state, action) => {
-      console.log('action.payload', action.payload);
       state.isLoading = false;
     });
     builder.addCase(updateProductAsync.rejected, (state, action) => {
@@ -107,6 +107,6 @@ const productsSlice = createSlice({
   },
 });
 
-export const {updateProducts} = productsSlice.actions;
+export const {setSelectedProduct} = productsSlice.actions;
 
 export default productsSlice.reducer;

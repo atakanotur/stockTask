@@ -26,7 +26,11 @@ const userSlice = createSlice({
     isLoading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    resetError: (state, action) => {
+      state.error = null;
+    },
+  },
   extraReducers: builder => {
     //register
     builder.addCase(registerAsync.pending, (state, action) => {
@@ -56,5 +60,7 @@ const userSlice = createSlice({
     });
   },
 });
+
+export const {resetError} = userSlice.actions;
 
 export default userSlice.reducer;

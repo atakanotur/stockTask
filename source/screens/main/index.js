@@ -2,7 +2,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import {View, FlatList, TouchableOpacity, Alert} from 'react-native';
 import Modal from 'react-native-modal';
 
-import {Button, Text, Loading, Input} from '../../components';
+import {Button, Text, Loading, Input, SearchBar} from '../../components';
 import {styles} from './styles';
 
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -14,13 +14,14 @@ import {
 } from '../../redux/products';
 import {nanoid} from '@reduxjs/toolkit';
 
-export default function Main() {
+export default function Main({navigation}) {
   const [state, setState] = useState({
+    productId: null,
     productName: null,
     productPrice: null,
     productQuantity: null,
   });
-  const [selectedProduct, setSelectedProduct] = useState();
+  const [searchData, setSearchData] = useState(null);
   const [addProductModalVisible, setAddProductModalVisible] = useState(false);
   const [productOptionsModalVisible, setProductOptionsModalVisible] =
     useState(false);
@@ -35,6 +36,29 @@ export default function Main() {
     dispatch(fetchProductsAsync(user.uid));
   }, []);
 
+  const resetState = () => {
+    setState({
+      productId: null,
+      productName: null,
+      productPrice: null,
+      productQuantity: null,
+    });
+  };
+
+  const onChangeSearch = e => {
+    setSearchData(search(e));
+  };
+
+  const search = searchText => {
+    if (searchText) {
+      let filtered;
+      filtered = products.products.filter(item =>
+        item.name.toLowerCase().includes(searchText.toLowerCase()),
+      );
+      return filtered;
+    }
+  };
+
   const onChangeProductName = e => {
     setState({
       ...state,
@@ -43,21 +67,26 @@ export default function Main() {
   };
 
   const onChangeProductPrice = e => {
-    setState({
-      ...state,
-      productPrice: e,
-    });
+    if (/^\d+$/.test(e)) {
+      setState({
+        ...state,
+        productPrice: e,
+      });
+    }
   };
 
   const onChangeProductQuantity = e => {
-    setState({
-      ...state,
-      productQuantity: e,
-    });
+    if (/^\d+$/.test(e)) {
+      setState({
+        ...state,
+        productQuantity: e,
+      });
+    }
   };
 
   const addProduct = () => {
     const copyProducts = products.products.slice();
+    console.log('state', state);
     if (
       state.productName !== null &&
       state.productPrice !== null &&
@@ -84,11 +113,12 @@ export default function Main() {
         },
       ]);
     }
+    resetState();
   };
 
   const updateProduct = () => {
     const copyProducts = products.products.map(p =>
-      selectedProduct.id === p.id
+      state.productId === p.id
         ? {
             ...p,
             name: state.productName,
@@ -104,11 +134,12 @@ export default function Main() {
     dispatch(updateProductAsync(payload));
     dispatch(fetchProductsAsync(user.uid));
     setProductOptionsModalVisible(false);
+    resetState();
   };
 
   const deleteProduct = () => {
     const copyProducts = products.products.filter(
-      p => p.id !== selectedProduct.id,
+      p => p.id !== state.productId,
     );
     const payload = {
       ...products,
@@ -128,19 +159,17 @@ export default function Main() {
         onPress: () => console.log('No'),
       },
     ]);
+    resetState();
   };
 
-  const search = () => {};
-
   const productsRenderItem = ({item}) => {
-    console.log('item', item);
     return (
       <TouchableOpacity
         onPress={() => {
           setProductOptionsModalVisible(true);
-          setSelectedProduct(item);
           setState({
             ...state,
+            productId: item.id,
             productName: item.name,
             productPrice: item.price,
             productQuantity: item.quantity,
@@ -169,8 +198,8 @@ export default function Main() {
       <View style={styles.banner}>
         <View style={styles.bannerLeftButton}>
           <Button
-            text="Search"
-            onPress={() => search()}
+            text="Spend Product"
+            onPress={() => navigation.navigate('Spend')}
             textStyle={styles.bannerButtons}
           />
         </View>
@@ -186,9 +215,20 @@ export default function Main() {
       <FlatList
         ref={ref}
         style={styles.products}
-        data={products.products}
+        data={
+          searchData === null || searchData === undefined
+            ? products.products
+            : searchData
+        }
         extraData={products.products}
         renderItem={productsRenderItem}
+        ListHeaderComponent={
+          <SearchBar
+            containerStyle={styles.addProductModalInput}
+            style={styles.addProductModalInputText}
+            onChangeText={onChangeSearch}
+          />
+        }
       />
       <Modal
         isVisible={addProductModalVisible}
@@ -247,7 +287,10 @@ export default function Main() {
       </Modal>
       <Modal
         isVisible={productOptionsModalVisible}
-        onBackdropPress={() => setProductOptionsModalVisible(false)}>
+        onBackdropPress={() => {
+          setProductOptionsModalVisible(false);
+          resetState();
+        }}>
         <View style={styles.productOptionsModalMain}>
           <Text
             text="Edit Product"
@@ -260,7 +303,7 @@ export default function Main() {
                 style={styles.productOptionsModalInputText}
               />
               <Input
-                defaultValue={selectedProduct?.name}
+                defaultValue={state?.productName}
                 containerStyle={styles.productOptionsModalInput}
                 style={styles.productOptionsModalInputText}
                 onChangeText={onChangeProductName}
@@ -273,7 +316,7 @@ export default function Main() {
               />
               <Input
                 keyboardType="number-pad"
-                defaultValue={selectedProduct?.price}
+                defaultValue={state?.productPrice}
                 containerStyle={styles.productOptionsModalInput}
                 style={styles.productOptionsModalInputText}
                 onChangeText={onChangeProductPrice}
@@ -287,7 +330,7 @@ export default function Main() {
               />
               <Input
                 keyboardType="number-pad"
-                defaultValue={selectedProduct?.quantity}
+                defaultValue={state?.productQuantity?.toString()}
                 containerStyle={styles.productOptionsModalInput}
                 style={styles.productOptionsModalInputText}
                 onChangeText={onChangeProductQuantity}

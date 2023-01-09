@@ -3,7 +3,7 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import {Main, Login, Register} from '../screens';
+import {Main, Login, Register, Spend} from '../screens';
 
 const RootStack = createNativeStackNavigator();
 const MainStack = createNativeStackNavigator();
@@ -22,6 +22,7 @@ const MainNavigator = () => {
   return (
     <MainStack.Navigator screenOptions={{headerShown: false}}>
       <MainStack.Screen name="Main" component={Main} />
+      <MainStack.Screen name="Spend" component={Spend} />
     </MainStack.Navigator>
   );
 };

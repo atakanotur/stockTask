@@ -4,12 +4,12 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {CommonActions} from '@react-navigation/native';
 
-import {Text, Button, Input} from '../../components';
+import {Text, Button, Input, Loading} from '../../components';
 
 import {styles} from './styles';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {signInAsync} from '../../redux/user';
+import {signInAsync, resetError} from '../../redux/user';
 
 export default function Login({navigation}) {
   const dispatch = useDispatch();
@@ -18,13 +18,6 @@ export default function Login({navigation}) {
   const authResult = useSelector(state => state.user.authResult);
   const error = useSelector(state => state.user.error);
   const isLoading = useSelector(state => state.user.isLoading);
-
-  useEffect(() => {
-    console.log('isLoading', isLoading);
-    console.log('user', user);
-    console.log('error', error);
-    console.log('authResult', authResult);
-  }, [isLoading]);
 
   useEffect(() => {
     if (authResult) {
@@ -44,7 +37,9 @@ export default function Login({navigation}) {
       Alert.alert('Error', error.message, [
         {
           text: 'OK',
-          onPress: () => console.log('OK'),
+          onPress: () => {
+            dispatch(resetError());
+          },
         },
       ]);
     }
@@ -89,7 +84,6 @@ export default function Login({navigation}) {
             uri: 'https://media.licdn.com/dms/image/C4E0BAQGxPzh2tO2P2g/company-logo_200_200/0/1564989263908?e=1680739200&v=beta&t=qQ4mt4HlF46_hKzrHto1k0zJT8YS4ZC7Iv1gTx24Fjw',
           }}
           resizeMode="contain"
-          ƒ
           style={styles.image}
         />
       </View>
@@ -127,6 +121,7 @@ export default function Login({navigation}) {
           />
         </View>
       </View>
+      <Loading visible={isLoading} />
     </SafeAreaView>
   );
 }

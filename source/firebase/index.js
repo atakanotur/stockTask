@@ -3,7 +3,6 @@ import auth from '@react-native-firebase/auth';
 
 //products
 export const createProducts = payload => {
-  console.log('payload3', payload);
   return new Promise((resolve, reject) => {
     try {
       firestore().collection('products').add(payload);
@@ -32,7 +31,7 @@ export const fetchProducts = payload => {
           resolve(result);
         });
     } catch (error) {
-      console.log('error.fetchProducts', error);
+      console.log('error', error);
       reject(error);
     }
   });
@@ -50,7 +49,7 @@ export const addProduct = payload => {
         .then(res => {
           resolve(res);
         })
-        .catch(e => console.log('e', e));
+        .catch(error => console.log('error', error));
     } catch (error) {
       console.log('error', error);
       reject(error);
@@ -70,7 +69,7 @@ export const updateProduct = payload => {
         .then(res => {
           resolve(res);
         })
-        .catch(e => console.log('e', e));
+        .catch(error => console.log('error', error));
     } catch (error) {
       console.log('error', error);
       reject(error);

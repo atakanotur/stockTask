@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {View, Image, Alert} from 'react-native';
 
-import {Text, Input, Button} from '../../components';
+import {Text, Input, Button, Loading} from '../../components';
 import {styles} from './styles';
 
 import {useDispatch, useSelector} from 'react-redux';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {CommonActions} from '@react-navigation/native';
 
-import {registerAsync} from '../../redux/user';
+import {registerAsync, resetError} from '../../redux/user';
 import {createProductsAsync} from '../../redux/products';
 
 export default function Register({navigation}) {
@@ -24,7 +24,9 @@ export default function Register({navigation}) {
       Alert.alert('Error', error.message, [
         {
           text: 'OK',
-          onPress: () => console.log('OK'),
+          onPress: () => {
+            dispatch(resetError());
+          },
         },
       ]);
     }
@@ -64,7 +66,7 @@ export default function Register({navigation}) {
     });
   };
 
-  const register = async () => {
+  const register = () => {
     dispatch(registerAsync(state));
   };
 
@@ -73,7 +75,6 @@ export default function Register({navigation}) {
       userId: user.uid,
       products: [],
     };
-    console.log('payload1', payload);
     dispatch(createProductsAsync(payload));
   };
 
@@ -114,7 +115,7 @@ export default function Register({navigation}) {
             disabled={buttonDisabled}
           />
           <Button
-            onPress={() => navigation.navigate('Login')}
+            onPress={() => navigation.goBack()}
             text="Login"
             style={styles.loginButton}
             textStyle={styles.loginButtonText}
@@ -122,6 +123,7 @@ export default function Register({navigation}) {
           />
         </View>
       </View>
+      <Loading visible={isLoading} />
     </SafeAreaView>
   );
 }
