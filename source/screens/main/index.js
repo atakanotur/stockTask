@@ -22,6 +22,7 @@ export default function Main({navigation}) {
     productQuantity: null,
   });
   const [searchData, setSearchData] = useState(null);
+  const [searchText, setSearchText] = useState();
   const [addProductModalVisible, setAddProductModalVisible] = useState(false);
   const [productOptionsModalVisible, setProductOptionsModalVisible] =
     useState(false);
@@ -49,11 +50,11 @@ export default function Main({navigation}) {
     setSearchData(search(e));
   };
 
-  const search = searchText => {
-    if (searchText) {
+  const search = text => {
+    if (text) {
       let filtered;
       filtered = products.products.filter(item =>
-        item.name.toLowerCase().includes(searchText.toLowerCase()),
+        item.name.toLowerCase().includes(text.toLowerCase()),
       );
       return filtered;
     }
@@ -86,7 +87,6 @@ export default function Main({navigation}) {
 
   const addProduct = () => {
     const copyProducts = products.products.slice();
-    console.log('state', state);
     if (
       state.productName !== null &&
       state.productPrice !== null &&
@@ -113,6 +113,8 @@ export default function Main({navigation}) {
         },
       ]);
     }
+    setSearchData(null);
+    setSearchText('');
     resetState();
   };
 
@@ -134,6 +136,8 @@ export default function Main({navigation}) {
     dispatch(updateProductAsync(payload));
     dispatch(fetchProductsAsync(user.uid));
     setProductOptionsModalVisible(false);
+    setSearchData(null);
+    setSearchText('');
     resetState();
   };
 
@@ -159,6 +163,8 @@ export default function Main({navigation}) {
         onPress: () => console.log('No'),
       },
     ]);
+    setSearchData(null);
+    setSearchText('');
     resetState();
   };
 
@@ -227,6 +233,7 @@ export default function Main({navigation}) {
             containerStyle={styles.addProductModalInput}
             style={styles.addProductModalInputText}
             onChangeText={onChangeSearch}
+            value={searchText}
           />
         }
       />
@@ -245,6 +252,7 @@ export default function Main({navigation}) {
                 containerStyle={styles.addProductModalInput}
                 style={styles.addProductModalInputText}
                 onChangeText={onChangeProductName}
+                value={state.productName}
               />
             </View>
             <View>
@@ -257,6 +265,7 @@ export default function Main({navigation}) {
                 containerStyle={styles.addProductModalInput}
                 style={styles.addProductModalInputText}
                 onChangeText={onChangeProductPrice}
+                value={state.productPrice}
               />
             </View>
 
@@ -270,6 +279,7 @@ export default function Main({navigation}) {
                 containerStyle={styles.addProductModalInput}
                 style={styles.addProductModalInputText}
                 onChangeText={onChangeProductQuantity}
+                value={state.productQuantity}
               />
             </View>
           </View>
