@@ -233,7 +233,6 @@ export default function Main({navigation}) {
             containerStyle={styles.addProductModalInput}
             style={styles.addProductModalInputText}
             onChangeText={onChangeSearch}
-            value={searchText}
           />
         }
       />
