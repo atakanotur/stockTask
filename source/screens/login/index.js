@@ -81,7 +81,7 @@ export default function Login({navigation}) {
       <View style={styles.banner}>
         <Image
           source={{
-            uri: 'https://media.licdn.com/dms/image/C4E0BAQGxPzh2tO2P2g/company-logo_200_200/0/1564989263908?e=1680739200&v=beta&t=qQ4mt4HlF46_hKzrHto1k0zJT8YS4ZC7Iv1gTx24Fjw',
+            uri: 'https://static.thenounproject.com/png/214763-200.png',
           }}
           resizeMode="contain"
           style={styles.image}
